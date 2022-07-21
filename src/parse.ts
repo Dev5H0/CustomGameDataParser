@@ -5,8 +5,7 @@ import { readFileSync } from 'fs'
 const dataPath:string = __dirname + '\\data\\'
 const srcPath:string = __dirname + '\\src\\'
 
-let fileExtension:{file:string, list:string, template:string} = {
-    file: 'cgd',
+let fileExtension:{list:string, template:string} = {
     list: 'cgdl',
     template: 'cgdt'
 }
