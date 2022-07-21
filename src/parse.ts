@@ -1,6 +1,6 @@
 // @ts-ignore
 import { __dirname, compareStr, splitLines } from './utils.ts'
-import * as fs from 'fs'
+import { readFileSync } from 'fs'
 
 const dataPath:string = __dirname + '\\data\\'
 const srcPath:string = __dirname + '\\src\\'
@@ -23,7 +23,7 @@ export default class GenerateCustomParser {
         this.templatePath = `${templateDirectory}${templateFile}.${fileExtension.template}`
         this.filePaths = []
         this.fileNames = []
-        splitLines(fs.readFileSync(this.templatePath, 'utf8')).forEach((line:string):void => {
+        splitLines(readFileSync(this.templatePath, 'utf8')).forEach((line:string):void => {
             let data:TypeDataCP[] = []
             let x:string[] = line.split('=')
             let fileName:string = x[0]
@@ -35,25 +35,28 @@ export default class GenerateCustomParser {
             this.filePaths.push({name:fileName,data:data})
             this.fileNames.push(fileName)
         })
-        this.data = []
-        this.fileNames.forEach((n:string) => { this.data.push(this.parseFile(n)) })
+        this.data = {}
+        this.fileNames.forEach((n:string) => { this.data[n] = this.parseFile(n) })
     }
 
-    parseFile (_file:string):any {
-        let fileTemplateData:TypeCP|undefined = this.filePaths.find((value:TypeCP) => value.name == _file)
+    parseFile (_file:string):any[] {
+        const fileTemplateData:TypeCP|undefined = this.filePaths.find((value:TypeCP) => value.name == _file)
         if(!this.fileNames.includes(_file)) throw Error(`"${_file}" does not exist in [${this.fileNames}]`)
         if(!fileTemplateData) throw Error()
-        let file:string = `${this.dataDirectory}${_file}.${fileExtension.list}`
-        let fileContents:string = fs.readFileSync(file).toString().slice(0, -1)
-        let fileLines:string[] = splitLines(fileContents)
+
+        const file:string = `${this.dataDirectory}${_file}.${fileExtension.list}`
+        const fileContents:string = readFileSync(file).toString().slice(0, -1)
+        const fileLines:string[] = splitLines(fileContents)
+
         let k:string[] = []
         let v:string[] = []
-        let data:any[] = []
+        let data:any = []
 
         fileTemplateData.data.forEach((kv:TypeDataCP) => {
             k.push(kv.name)
             v.push(kv.type)
         })
+
         fileLines.forEach((line:string) => {
             let _data:any = {}
             let lineValues = line.split(':')
@@ -85,7 +88,7 @@ export default class GenerateCustomParser {
                 o = [Number(_tuple[0]), Number(_tuple[1])]
                 break
             case 'list':
-                o = i.split(',')
+                o = i.split(',').filter((obj:string) => { return obj !== ('\r' || '\\r') })
                 break
             case 'dict':
                 let _o:any = {}
