@@ -1,0 +1,4 @@
+globals=id:type:value
+players=name:gender:health.tuple:mana.tuple:items.list
+npcs=id:name:gender:age.number:health.tuple:mana.tuple:items.list
+items=id:name:info:values.dict
