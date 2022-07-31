@@ -1,2 +1,4 @@
-5H0:male:100,100:100,100:testItem1,testItem2,testItem3,testItem4,testItem5
-TestUser:unknown:100,100:100,100:
+5H0:human:male:100,100:100,100:testItem1,testItem2,testItem3,testItem4,testItem5
+TestUser:human:unknown:100,100:100,100:
+Elf:elf:unknown:100,100:100,100:
+Dwarf:dwarf:unknown:100,100:100,100:

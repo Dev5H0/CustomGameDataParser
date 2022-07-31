@@ -1,2 +1,2 @@
-test_npc:Villager:unknown:50:100,100:0,0:
-developer:Thorhallur:male:17:100,100:0,0:
+test_npc:Villager:human:unknown:50:100,100:0,0:
+developer:Thorhallur:human:male:17:100,100:0,0:

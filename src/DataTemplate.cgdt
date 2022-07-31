@@ -1,4 +1,8 @@
+races=name
 globals=id:type:value
-players=name:gender:health.tuple:mana.tuple:items.list
-npcs=id:name:gender:age.number:health.tuple:mana.tuple:items.list
 items=id:name:info:values.dict
+
+players=name:race:gender:health.tuple:mana.tuple:items.list
+npcs=id:name:race:gender:age.number:health.tuple:mana.tuple:quests.list:items.list
+locations=id:name:unlocked.bool:favor.number
+quest=id:name:info:unlocked.bool:finished.bool:rewards.dict
