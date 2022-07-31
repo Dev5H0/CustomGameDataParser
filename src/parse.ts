@@ -1,9 +1,8 @@
-// @ts-ignore
-import { __dirname, compareStr, splitLines } from './utils.ts'
+import Util from './utils.js'
 import { readFileSync } from 'fs'
 
-const dataPath:string = __dirname + '\\data\\'
-const srcPath:string = __dirname + '\\src\\'
+const dataPath:string = Util.getPath('data')
+const srcPath:string = Util.getPath('src')
 
 let fileExtension:{list:string, template:string} = {
     list: 'cgdl',
@@ -14,15 +13,15 @@ type TValueTypes = string|number|boolean|string[]|[number|string,number|string]
 type TypeDataCP = {name:string,type:string}
 type TypeCP = {name:string,data:TypeDataCP[]}
 export default class GenerateCustomParser {
-    readonly templatePath!:string
-    readonly filePaths!:TypeCP[]
-    readonly fileNames:string[]
-    data!:any|any[]
-    constructor (readonly dataDirectory:string, templateFile:string='DataTemplate', templateDirectory:string=srcPath) {
+    protected readonly templatePath!:string
+    protected readonly filePaths!:TypeCP[]
+    protected readonly fileNames:string[]
+    public data!:any|any[]
+    constructor (protected readonly dataDirectory:string, templateFile:string='DataTemplate', templateDirectory:string=srcPath) {
         this.templatePath = `${templateDirectory}${templateFile}.${fileExtension.template}`
         this.filePaths = []
         this.fileNames = []
-        splitLines(readFileSync(this.templatePath, 'utf8')).forEach((line:string):void => {
+        Util.splitLines(readFileSync(this.templatePath, 'utf8')).forEach((line:string):void => {
             let data:TypeDataCP[] = []
             let x:string[] = line.split('=')
             let fileName:string = x[0]
@@ -38,14 +37,14 @@ export default class GenerateCustomParser {
         this.fileNames.forEach((n:string) => { this.data[n] = this.parseFile(n) })
     }
 
-    parseFile (_file:string):any[] {
+    protected parseFile (_file:string):any[] {
         const fileTemplateData:TypeCP|undefined = this.filePaths.find((value:TypeCP) => value.name == _file)
         if(!this.fileNames.includes(_file)) throw Error(`"${_file}" does not exist in [${this.fileNames}]`)
         if(!fileTemplateData) throw Error()
 
         const file:string = `${this.dataDirectory}${_file}.${fileExtension.list}`
         const fileContents:string = readFileSync(file).toString().slice(0, -1)
-        const fileLines:string[] = splitLines(fileContents)
+        const fileLines:string[] = Util.splitLines(fileContents)
 
         let k:string[] = []
         let v:string[] = []
@@ -68,7 +67,7 @@ export default class GenerateCustomParser {
         return data
     }
 
-    parseType (t:string, i:any):TValueTypes {
+    protected parseType (t:string, i:any):TValueTypes {
         let o:TValueTypes
         switch (t) {
             case 'string':
@@ -78,8 +77,8 @@ export default class GenerateCustomParser {
                 o = Number(i)
                 break
             case 'bool':
-                if (compareStr(i, 'true')) o = true
-                else if (compareStr(i, 'false')) o = false
+                if (Util.compareStr(i, 'true')) o = true
+                else if (Util.compareStr(i, 'false')) o = false
                 else throw Error(`Type "${i}" can only be "true" or "false".`)
                 break
             case 'tuple':
@@ -101,7 +100,11 @@ export default class GenerateCustomParser {
         }
         return o
     }
+
+    public getDataByIndex(file:string, index:number):any { return this.data[file][index] }
+    public getDataByValue(file:string, key:string, value:any):any { return this.data[file].find((v:any) => v[key] == value) }
+    public setDataByIndex(file:string, index:number, key:string, newValue:any):void { this.data[file][index][key] = newValue }
+    public setDataByValue<V>(file:string, key:string, oldValue:V, newValue:V):void { this.data[file][this.data[file].findIndex((v:any) => v[key] == oldValue)][key] = newValue }
 }
 
-let GCP = new GenerateCustomParser(dataPath, 'DataTemplate', `${__dirname}\\src\\`)
-console.log(GCP.data)
+const GCP = new GenerateCustomParser(dataPath, 'DataTemplate', `${Util.__dirname}\\src\\`)
