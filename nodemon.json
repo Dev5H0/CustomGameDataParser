@@ -1,8 +1,0 @@
-{
-    "restartable": "rs",
-    "verbose": true,
-    "watch": [ "src/", "data/" ],
-    "execMap": { "ts": "node --loader ts-node/esm" },
-    "exec": "src/parse.ts",
-    "ext": "ts,cgdl,cgdt,json"
-}
