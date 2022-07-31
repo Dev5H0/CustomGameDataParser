@@ -6,7 +6,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon --exec \"python ./start.py\"",
+    "start": "npx nodemon -e ts,cgdl,cgdt --exec \"python ./start.py\"",
     "build": "npx tsc"
   },
   "author": "5H0",
