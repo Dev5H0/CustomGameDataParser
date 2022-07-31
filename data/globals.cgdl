@@ -1,4 +1,4 @@
-pid:number:1
+id:number:1
 test:string:Hello, World!
 unlocked_world1:bool:true
 unlocked_world2:bool:false
